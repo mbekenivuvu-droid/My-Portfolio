@@ -740,12 +740,8 @@ footer.site-footer {
 
 button#nl-badge,
 #nl-badge,
-.nl-badge,
-[id*="netlify-badge"],
-[class*="netlify-badge"],
-netlify-badge {
+#nl-card,
+button[aria-controls="nl-card"] {
   display: none !important;
   visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }

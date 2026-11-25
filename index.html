@@ -452,71 +452,76 @@
   </button>
 
   <script>
-    const removeNetlifyBadge = () => {
-      document
-        .querySelectorAll(
-          '#nl-badge, .nl-badge, [id*="netlify-badge"], [class*="netlify-badge"], netlify-badge'
-        )
-        .forEach((el) => el.remove());
-    };
-
-    window.addEventListener("DOMContentLoaded", removeNetlifyBadge);
-    window.addEventListener("load", removeNetlifyBadge);
-
-    const navToggle = document.getElementById("nav-toggle");
-    const primaryNav = document.querySelector(".site-header nav");
-
-    if (navToggle && primaryNav) {
-      navToggle.addEventListener("click", () => {
-        const isOpen = primaryNav.classList.toggle("open");
-        navToggle.classList.toggle("active", isOpen);
-        navToggle.setAttribute("aria-expanded", String(isOpen));
+  const hideNetlifyBadge = () => {
+    document
+      .querySelectorAll('#nl-badge, #nl-card, button[aria-controls="nl-card"]')
+      .forEach((el) => {
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
       });
+  };
 
-      primaryNav.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
-          primaryNav.classList.remove("open");
-          navToggle.classList.remove("active");
-          navToggle.setAttribute("aria-expanded", "false");
-        });
-      });
-    }
+  window.addEventListener("DOMContentLoaded", hideNetlifyBadge);
+  window.addEventListener("load", hideNetlifyBadge);
+  new MutationObserver(hideNetlifyBadge).observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
 
-    document.getElementById("scrollTopBtn").addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+  const navToggle = document.getElementById("nav-toggle");
+  const primaryNav = document.querySelector(".site-header nav");
+
+  if (navToggle && primaryNav) {
+    navToggle.addEventListener("click", () => {
+      const isOpen = primaryNav.classList.toggle("open");
+      navToggle.classList.toggle("active", isOpen);
+      navToggle.setAttribute("aria-expanded", String(isOpen));
     });
 
-    const contactForm = document.getElementById("contactForm");
-    const formStatus = document.getElementById("formStatus");
+    primaryNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        primaryNav.classList.remove("open");
+        navToggle.classList.remove("active");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 
-    contactForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      formStatus.textContent = "Sending...";
+  document.getElementById("scrollTopBtn").addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-      const formData = new FormData(contactForm);
+  const contactForm = document.getElementById("contactForm");
+  const formStatus = document.getElementById("formStatus");
 
-      try {
-        const response = await fetch(contactForm.action, {
-          method: contactForm.method,
-          body: formData,
-          headers: {
-            Accept: "application/json",
-          },
-        });
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formStatus.textContent = "Sending...";
 
-        if (response.ok) {
-          formStatus.textContent = "Message sent! I'll get back to you soon.";
-          contactForm.reset();
-        } else {
-          const data = await response.json();
-          formStatus.textContent =
-            data.errors?.map((err) => err.message).join(", ") ||
-            "Oops! Something went wrong. Please try again.";
-        }
-      } catch (error) {
-        formStatus.textContent = "Network error. Please try again in a moment.";
+    const formData = new FormData(contactForm);
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: contactForm.method,
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        formStatus.textContent = "Message sent! I'll get back to you soon.";
+        contactForm.reset();
+      } else {
+        const data = await response.json();
+        formStatus.textContent =
+          data.errors?.map((err) => err.message).join(", ") ||
+          "Oops! Something went wrong. Please try again.";
       }
-    });
-  </script>
+    } catch (error) {
+      formStatus.textContent = "Network error. Please try again in a moment.";
+    }
+  });
+</script>
 </body>
 </html>
