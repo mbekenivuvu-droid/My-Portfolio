@@ -452,6 +452,17 @@
   </button>
 
   <script>
+    const removeNetlifyBadge = () => {
+      document
+        .querySelectorAll(
+          '#nl-badge, .nl-badge, [id*="netlify-badge"], [class*="netlify-badge"], netlify-badge'
+        )
+        .forEach((el) => el.remove());
+    };
+
+    window.addEventListener("DOMContentLoaded", removeNetlifyBadge);
+    window.addEventListener("load", removeNetlifyBadge);
+
     const navToggle = document.getElementById("nav-toggle");
     const primaryNav = document.querySelector(".site-header nav");
 
